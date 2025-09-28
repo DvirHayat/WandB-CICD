@@ -4,6 +4,10 @@ jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - name: Hello
         run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-  
+      - name: Run Python script
+        run: |
+          pip install -r requirements.txt
+          python ci.py
