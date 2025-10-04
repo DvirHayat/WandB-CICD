@@ -12,13 +12,23 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - name: install dependencies
-        run: pip install requirements.txt
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
       
-      - name: Label PR as Bug  
-        shell : python
-        run: 
-          addbugLabel.py
+      - name: Run addbugLabel.py
+        run: python addbugLabel.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_ISSUE_NUMBER: ${{ github.event.issue.number }}
+          INPUT_COMMAND: ${{ github.event.comment.body }}
+      
+      - name: Label PR
+        run: |
+          python addbugLabel.py
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
