@@ -1,0 +1,19 @@
+name: Label PR as Bug on /bug Comment
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  label-bug:
+    if: github.event.issue.pull_request && contains(github.event.comment.body, '/bug')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Add 'bug' label to PR
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: bug
