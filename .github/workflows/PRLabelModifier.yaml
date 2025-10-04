@@ -1,0 +1,26 @@
+name: Label PR as Bug on /bug Comment
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  label-bug:
+    if: github.event.issue.pull_request
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - name: install dependencies
+        run: pip install requirements.txt
+      
+      - name: Label PR as Bug  
+        shell : python
+        run: 
+          addbugLabel.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_ISSUE_NUMBER: ${{ github.event.issue.number }}
+          INPUT_COMMAND: ${{ github.event.comment.body }}
