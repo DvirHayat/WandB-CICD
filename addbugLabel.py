@@ -1,5 +1,5 @@
 import os
-from ghapi import GhApi
+from ghapi.all import GhApi
 owner,repo = os.getenv("GITHUB_REPOSITORY").split("/")
 api = GhApi(owner=owner, repo=repo)
 commeted = os.getenv("INPUT_COMMAND")
