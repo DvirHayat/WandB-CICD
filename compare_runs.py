@@ -43,11 +43,14 @@ def compare_runs(entity='dvir-hayat-kla',
     )
 
     pg = wr.PanelGrid(
-        runsets=[wr.Runset(entity, project, "Run Comparison")
-                 .set_filters({
-    'id': {'$in': [run_id, baseline.id]}}),
-        panels=[wr.RunComparer(diff_only='split', layout={'w': 24, 'h': 15})]
-    )
+    runsets=[
+        wr.Runset(entity, project, "Run Comparison")
+        .set_filters({'id': {'$in': [run_id, baseline.id]}})
+    ],
+    panels=[
+        wr.RunComparer(diff_only='split', layout={'w': 24, 'h': 15})
+    ]
+)
 
     report.blocks = report.blocks[:1] + [pg] + report.blocks[1:]
     report.save()
@@ -58,6 +61,7 @@ def compare_runs(entity='dvir-hayat-kla',
             print(f'REPORT_URL={report.url}', file=f)
 
     return report.url
+
 
 
 if __name__ == '__main__':
