@@ -20,8 +20,8 @@ def get_baseline_run(entity='hamelsmu', project='my-report-project', tag='baseli
     return runs[0]
 
 
-def compare_runs(entity='hamelsmu',
-                 project='cicd_demo',
+def compare_runs(entity='dvir-hayat-kla',
+                 project='cicd_quickstart',
                  tag='baseline',
                  run_id=None):
     """Compare the given run to the baseline run and create a W&B report."""
@@ -44,7 +44,8 @@ def compare_runs(entity='hamelsmu',
 
     pg = wr.PanelGrid(
         runsets=[wr.Runset(entity, project, "Run Comparison")
-                 .set_filters_with_python_expr(f"ID in ['{run_id}', '{baseline.id}']")],
+                 .set_filters({
+    'id': {'$in': [run_id, baseline.id]}}),
         panels=[wr.RunComparer(diff_only='split', layout={'w': 24, 'h': 15})]
     )
 
