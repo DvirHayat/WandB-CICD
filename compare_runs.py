@@ -35,6 +35,7 @@ def compare_runs(entity='dvir-hayat-kla',
     assert run_id, 'You must set the RUN_ID environment variable or pass a `run_id` argument'
 
     baseline = get_baseline_run(entity=entity, project=project, tag=tag)
+    # Create a report
     report = wr.Report(
         entity=entity,
         project=project,
@@ -42,21 +43,24 @@ def compare_runs(entity='dvir-hayat-kla',
         description=f"A comparison of runs — baseline: {baseline.name}"
     )
 
+    # Use filter expressions (per docs) to include just the two runs
+    filter_expr = f"id in ['{run_id}', '{baseline.id}']"
     pg = wr.PanelGrid(
         runsets=[
-            wr.Runset(entity, project, "Run Comparison")
-            .set_filters_with_python_expr(f"id in ['{run_id}', '{baseline.id}']")
+            wr.Runset(entity=entity, project=project, filters=filter_expr)
         ],
         panels=[
             wr.RunComparer(diff_only='split', layout={'w': 24, 'h': 15})
         ]
     )
 
+    # Build the report’s blocks
+    # You may choose to insert the new grid at a specific position
     report.blocks = report.blocks[:1] + [pg] + report.blocks[1:]
     report.save()
 
-    # Output the report URL for GitHub Actions
-    if os.getenv('CI'):
+    # In CI / GitHub Actions, emit REPORT_URL to GITHUB_OUTPUT
+    if os.getenv('CI'):  
         with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
             print(f'REPORT_URL={report.url}', file=f)
 
